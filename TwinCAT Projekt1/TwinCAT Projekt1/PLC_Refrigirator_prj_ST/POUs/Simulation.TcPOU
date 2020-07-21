@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="Simulation" Id="{d80bc9b5-f326-44dc-8db6-962079a94870}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Simulation
+VAR
+	fbT1				: TON;				//The temperature is decreased on a time dalay
+	tCooling			: TIME := T#500MS;	//Cooling rate
+	bReduceTemp			: BOOL;				//Signal for decreasing the temperature
+	fbT2				: TON;				//The temperature is increased on a time delay
+	tEnvironment		: TIME := T#2S;		//Delay time when the door is closed
+	tEnvironmentDoorOpen: TIME := T#1S;		//Delay time when the door is open
+	bRaiseTemp			: BOOL;				//Signal for increasing the temperature
+	tImTemp				: TIME;				//Delay time
+	nCounter			: INT;				//Iteration of the programm
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//After the compressor has been activated due to fTempActual being too high, the temperature decreases.
+//The temperature is decreased by 0.1°C per cycle after a delay of P_Cooling
+IF GVL_VAR.bCompressor THEN
+	fbT1(IN:= GVL_VAR.bCompressor, PT:= tCooling, Q=> bReduceTemp);
+	IF bReduceTemp THEN
+		GVL_VAR.fTempActual:= GVL_VAR.fTempActual-0.1;
+		fbT1(IN:= FALSE);
+	END_IF
+END_IF
+
+//If the door is open, the warming will occur faster; SEL chooses between tEnvironment or tEnvironmentDoorOpen
+tImTemp:= SEL(GVL_VAR.bDoorOpen, tEnvironment, tEnvironmentDoorOpen);
+
+//If the compressor is not in operation, then the cooling chamber will become warmer.
+//The temperature is incremental by 0.1°C per cycle after a delay of tImTemp
+fbT2(IN:= TRUE, PT:= tImTemp, Q=> bRaiseTemp);
+IF bRaiseTemp THEN
+	GVL_VAR.fTempActual:= GVL_VAR.fTempActual+0.1;
+	fbT2(IN:= FALSE);
+END_IF
+
+nCounter := nCounter+1;
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="Simulation">
+      <LineId Id="5" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="3" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

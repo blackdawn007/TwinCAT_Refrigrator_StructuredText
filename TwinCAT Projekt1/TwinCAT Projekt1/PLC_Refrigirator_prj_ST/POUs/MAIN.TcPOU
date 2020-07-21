@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="MAIN" Id="{99dfa53b-5419-4e73-b545-8a9f1a8f4f63}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fHysteresis: REAL := 1;		//Hysteresis value
+	rUpperLimit: REAL;		 	//Temperature set value added with Hysteresis
+	rLowerLimit: REAL;		 	//Temperature set value subtracted with Hysteresis
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[rUpperLimit := GVL_Var.fTempSet + fHysteresis;
+rLowerLimit := GVL_Var.fTempSet - fHysteresis;
+
+// Logic to switch ON the compressor when it exceeds the UpperLimit
+// and compressor switched OFF when it is below the lowerLimit
+IF GVL_Var.fTempActual > rUpperLimit THEN
+	GVL_Var.bCompressor := TRUE;
+ELSIF GVL_Var.fTempActual < rLowerLimit THEN
+	GVL_Var.bCompressor := FALSE; 
+END_IF
+
+//Calling Signal1 Program
+Signal1();
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

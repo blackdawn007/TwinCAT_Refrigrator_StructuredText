@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="FB_Blinker1" Id="{493f8cd2-7c29-4cac-9141-4d447a048dbe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Blinker1
+VAR_INPUT
+	bStart: BOOL;         	//Start signal 
+	tSignalTimeOn: TIME;  	//Pulse Time On
+	tSignalTimeOff: TIME;	//Pulse Time Off
+END_VAR
+VAR_OUTPUT
+	bOut: BOOL;				//Output pulse 
+END_VAR
+VAR
+	fbTimerA: TON;			//TimerA Initialization
+	fbTimerB: TON;			//TimerB Initialization
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Timer A Parameterization
+fbTimerA(IN := (bStart AND NOT fbTimerB.Q),
+		PT := tSignalTimeOn,
+		Q => bOut
+		);
+
+// Timer B Parameterization	
+fbTimerB(IN := fbTimerA.Q,
+		PT := tSignalTimeOff,
+		);		
+		
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Blinker1">
+      <LineId Id="44" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

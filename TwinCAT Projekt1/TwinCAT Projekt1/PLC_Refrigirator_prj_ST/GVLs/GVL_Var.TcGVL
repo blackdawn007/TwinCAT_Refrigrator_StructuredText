@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <GVL Name="GVL_Var" Id="{397b7db9-b2cf-446f-b629-4b7206664173}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	bDoorOpen: BOOL := FALSE;
+	fTempSet: REAL := 8.0;
+	fTempActual: REAL := 8.0;
+	bCompressor: BOOL := FALSE;
+	tDoorOpenThreshold: TIME := T#10s;
+	tlmAlaramThreshold: TIME := T#30s;
+	bSignal: BOOL := FALSE;
+	bLamp: BOOL := FALSE;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

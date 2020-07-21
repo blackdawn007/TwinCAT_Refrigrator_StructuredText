@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="Signal1" Id="{1523f310-75c7-4178-a880-46a717c37a5c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Signal1
+VAR
+	fbTimer1: TON;			//Timer1 Initialization
+	fbTimer2: TON;			//Timer2 Initialization
+	Blinker: FB_Blinker1;	//Function Block Blinker1 Initialization
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Timer1 Parameterization
+fbTimer1(IN := GVL_Var.bCompressor,
+		PT	:= GVL_Var.tlmAlaramThreshold,
+		Q	=> GVL_Var.bSignal
+		);
+//Timer2 Parameterization
+fbTimer2(IN := GVL_Var.bDoorOpen,
+		PT	:= GVL_Var.tlmAlaramThreshold
+		);
+//Blinker Parameterization	
+Blinker(bStart := fbTimer2.Q,
+		tSignalTimeOff := T#1S, 
+		tSignalTimeOn	:= T#1S,
+		bOut => GVL_Var.bSignal );
+//To switch ON the Lamp when Door is open		
+IF GVL_Var.bDoorOpen THEN
+	GVL_Var.bLamp := TRUE;
+ELSIF NOT GVL_Var.bDoorOpen THEN
+	GVL_Var.bLamp := FALSE;
+END_IF
+	
+		
+	]]></ST>
+    </Implementation>
+    <LineIds Name="Signal1">
+      <LineId Id="45" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="18" Count="3" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
